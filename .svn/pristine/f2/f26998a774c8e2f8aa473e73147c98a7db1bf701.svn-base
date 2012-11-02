@@ -1,0 +1,69 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class Menubalk extends JPanel implements ActionListener{
+    private JButton acties, edit, kalender, toevoegen, zoekBalk, gebruiker;
+    
+    public Menubalk(){
+        setSize(800, 50);
+        
+        setLayout(new FlowLayout());
+        
+        add(acties);
+        add(edit);
+        add(toevoegen);
+        add(kalender);
+        add(gebruiker);
+        add(zoekBalk);
+    }
+    
+    private void makeButtons(){
+        acties = new JButton("Acties");
+        edit = new JButton("Edit");
+        kalender = new JButton("Kalender");
+        toevoegen = new JButton("Gedachte toevoegen");
+        zoekBalk = new JButton("Zoekbalk");
+        gebruiker = new JButton("Gebruiker");
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        if(e.getActionCommand().equals("Acties")){
+            new Actiescreen();
+        }
+        
+        if(e.getActionCommand().equals("Edit")){
+            new EditScreen();
+        }
+        
+        if(e.getActionCommand().equals("Kalender")){
+            new Kalenderscreen();
+        }
+        
+        if(e.getActionCommand().equals("Gedachte toevoegen")){
+            
+        }
+        
+        if(e.getActionCommand().equals("zoekbalk")){
+            
+        }
+        
+        if(e.getActionCommand().equals("Gebruiker")){
+            
+        }
+    }
+}

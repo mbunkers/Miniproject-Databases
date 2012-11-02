@@ -1,0 +1,35 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import View.Frame;
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class Controller {
+    
+    private Frame frame;
+
+    public Controller() {
+        frame = new Frame();
+    }
+    
+    public void logOff()
+    {
+        frame.logOff();
+    }
+    
+    public void quit()
+    {
+        frame.quit();
+    }
+    
+    public void add(JPanel panel){
+        frame.add(panel);
+    }
+}

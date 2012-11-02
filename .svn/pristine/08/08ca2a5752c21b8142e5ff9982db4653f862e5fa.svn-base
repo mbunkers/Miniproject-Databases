@@ -1,0 +1,132 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import static Controller.Main.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JDialog;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class Menubalk extends JMenuBar implements ActionListener {
+
+    private JMenuItem afsluiten, acties, toevoegen, uitloggen, editMenu, kalenderOverzicht, 
+                      wisGedachte, editGedachte, addProject, deleteProject, editProject;
+    private JMenu file, edit, gebruiker, kalender, zoekBalk, gedachte, project;
+
+    public Menubalk() {
+        makeItems();
+        add(file);
+        file.add(afsluiten);
+
+        add(edit);
+        edit.add(editMenu);
+        edit.add(acties);
+
+        edit.add(gedachte);
+        gedachte.add(toevoegen);
+        gedachte.add(editGedachte);
+        gedachte.add(wisGedachte);
+        
+        edit.add(project);
+        project.add(addProject);
+        project.add(editProject);
+        project.add(deleteProject);
+        
+        add(kalender);
+        kalender.add(kalenderOverzicht);
+
+        add(gebruiker);
+        gebruiker.add(uitloggen);
+
+        add(zoekBalk);
+    }
+
+    private void makeItems() {
+        file = new JMenu("File");
+        afsluiten = new JMenuItem("Afsluiten");
+        afsluiten.addActionListener(this);
+        
+        gedachte = new JMenu("Gedachte");
+        editGedachte = new JMenuItem("Edit gedachte");
+        wisGedachte = new JMenuItem("Wis gedachte");
+        
+        project = new JMenu("Project");
+        addProject = new JMenuItem("Voeg project toe");
+        editProject = new JMenuItem("Bewerk project");
+        deleteProject = new JMenuItem("Verwijder project");
+        
+        acties = new JMenuItem("Acties");
+        acties.addActionListener(this);
+        edit = new JMenu("Edit");
+        editMenu = new JMenuItem("Editmenu");
+        editMenu.addActionListener(this);
+        kalender = new JMenu("Kalender");
+        kalenderOverzicht = new JMenuItem("Kalenderoverzicht");
+        toevoegen = new JMenuItem("Gedachte toevoegen");
+        toevoegen.addActionListener(this);
+        zoekBalk = new JMenu("Zoekbalk");
+        gebruiker = new JMenu("Gebruiker");
+        uitloggen = new JMenuItem("Uitloggen");
+        uitloggen.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("Acties")) {
+            controller.add(new Actiescreen());
+        }
+
+        if (e.getActionCommand().equals("Editmenu")) {
+            //controller.add(new EditScreen());
+            System.out.println("Editmenu");
+            JDialog dialog = new JDialog();
+            dialog.setBounds(0, 0, 300, 500);
+
+            dialog.add(new EditScreen(1));
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+        }
+
+        if (e.getActionCommand().equals("Kalenderoverzicht")) {
+            controller.add(new Kalenderscreen());
+        }
+
+        if (e.getActionCommand().equals("Gedachte toevoegen")) {
+            System.out.println("gedachte toevoegen");
+            JDialog dialog = new JDialog();
+            dialog.setTitle("Gedachte Toevoegen");
+            dialog.setModal(true);
+            dialog.setBounds(0, 0, 300, 500);
+
+            dialog.add(new EditScreen(2));
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+            dialog.validate();
+        }
+
+        if (e.getActionCommand().equals("zoekbalk")) {
+        }
+
+        if (e.getActionCommand().equals("Gebruiker")) {
+        }
+
+        if (e.getActionCommand().equals("Uitloggen")) {
+            controller.logOff();
+        }
+
+        if (e.getActionCommand().equals("Afsluiten")) {
+            controller.quit();
+        }
+    }
+}

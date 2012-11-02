@@ -1,0 +1,44 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import View.MainScreen;
+import javax.swing.JFrame;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class MiniprojectDatabases extends JFrame{
+
+    public MiniprojectDatabases(){
+        setSize(800, 600);
+        setTitle("MiniProject Databases & Java");
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        add(new MainScreen());
+        
+        pack();
+        setVisible(true);
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // initialiseer eerst verbinding met de database
+        if( !DataLayer.init() )
+        {
+            System.err.println("Exit: no connection to database" );
+            System.exit(-1);
+        }
+        else {
+            System.out.println("Connection established");
+        }
+        
+        new MiniprojectDatabases();
+    }
+}

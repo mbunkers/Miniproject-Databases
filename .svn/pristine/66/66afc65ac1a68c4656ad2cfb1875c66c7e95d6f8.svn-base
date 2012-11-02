@@ -1,0 +1,35 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Model;
+
+import Controller.Database;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.SQLException;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class Project {
+    
+    private Connection con = (Connection) Database.getConnection();
+    
+    public Project(){
+        
+    }
+    
+    public void putProject(String projectNaam){
+        try {
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement();
+            
+            stmt.executeQuery("insert into projects"
+                    + "(name)"
+                    + "values( " + projectNaam + ");");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}

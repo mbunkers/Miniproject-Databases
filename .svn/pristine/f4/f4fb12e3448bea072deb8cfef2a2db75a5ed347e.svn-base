@@ -1,0 +1,57 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Controller.DataLayer;
+import Model.Gedachte;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.ListModel;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class Projectscreen extends JPanel {
+private JList list;
+private JScrollBar scroll;
+
+    public Projectscreen() {
+        init();
+    }
+    
+    public void init()
+    {
+        setLayout(new BorderLayout());
+        list = new JList();
+        add(list, BorderLayout.CENTER);
+        setBorder(BorderFactory.createBevelBorder(5, Color.BLACK, Color.BLACK));
+        setBackground(Color.yellow);
+        
+        scroll = new JScrollBar();
+        scroll.setOrientation(JScrollBar.VERTICAL);
+        add(scroll, BorderLayout.EAST);
+        validate();
+    }
+
+    public void updateThoughts() {
+        ArrayList thoughts = DataLayer.getAllThoughts();
+        DefaultListModel model = new DefaultListModel();
+        for (Object test : thoughts){
+            Gedachte t = (Gedachte) test;
+            String weergave = t.getId() + ". " + t.getNotes();
+            model.addElement(weergave);
+        }
+        list.setModel(model);
+        validate();
+    }
+    
+}

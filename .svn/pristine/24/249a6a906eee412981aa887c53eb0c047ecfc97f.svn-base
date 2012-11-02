@@ -1,0 +1,87 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import static Controller.Main.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class Menubalk extends JMenuBar implements ActionListener{
+    private JMenuItem afsluiten, acties, toevoegen, uitloggen;
+    private JMenu file, edit, gebruiker, kalender, zoekBalk;
+    
+    public Menubalk(){
+        makeItems();
+        add(file);
+        file.add(afsluiten);
+        
+        add(edit);
+        edit.add(toevoegen);
+        edit.add(acties);
+        
+        add(kalender);
+        
+        add(gebruiker);
+        gebruiker.add(uitloggen);
+        
+        add(zoekBalk);
+    }
+    
+    private void makeItems(){
+        file        = new JMenu("file");
+        afsluiten   = new JMenuItem("Afsluiten");
+        afsluiten.addActionListener(this);
+        acties      = new JMenuItem("Acties");
+        edit        = new JMenu("Edit");
+        kalender    = new JMenu("Kalender");
+        toevoegen   = new JMenuItem("Gedachte toevoegen");
+        zoekBalk    = new JMenu("Zoekbalk");
+        gebruiker   = new JMenu("Gebruiker");
+        uitloggen   = new JMenuItem("Uitloggen");
+        uitloggen.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals("Acties")){
+            new Actiescreen();
+        }
+        
+        if(e.getActionCommand().equals("Edit")){
+            new EditScreen();
+        }
+        
+        if(e.getActionCommand().equals("Kalender")){
+            new Kalenderscreen();
+        }
+        
+        if(e.getActionCommand().equals("Gedachte toevoegen")){
+            
+        }
+        
+        if(e.getActionCommand().equals("zoekbalk")){
+            
+        }
+        
+        if(e.getActionCommand().equals("Gebruiker")){
+            
+        }
+        
+        if(e.getActionCommand().equals("Uitloggen")){
+            controller.logOff();
+        }
+        
+        if(e.getActionCommand().equals("Afsluiten")){
+            controller.quit();
+        }
+    }
+}

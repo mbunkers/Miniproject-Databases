@@ -1,0 +1,27 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class MiniprojectDatabases {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // initialiseer eerst verbinding met de database
+        if( !DataLayer.init() )
+        {
+            System.err.println("Exit: no connection to database" );
+            System.exit(-1);
+        }
+        else {
+            System.err.println("Connection established");
+        }
+    }
+}

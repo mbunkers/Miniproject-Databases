@@ -1,0 +1,41 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Model;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+
+import Controller.Database;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Actie {
+    
+    private Connection con = (Connection) Database.getConnection();
+    private int id = 0;
+    
+    public Actie(){
+        
+    }
+    
+    public String getActionDescription(){
+        try {
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement();
+        
+            ResultSet rs = stmt.executeQuery("select description from actions where id = " + id);
+        
+                return rs.getString(2);
+                
+            } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        id++;
+        return "";
+    }
+}

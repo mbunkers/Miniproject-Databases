@@ -1,0 +1,72 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+<<<<<<< .mine
+import View.MainScreen;
+import View.Menubalk;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.DriverManager;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+=======
+import View.Frame;
+>>>>>>> .r32
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class Controller {
+    
+    private Frame frame;
+
+    public Controller() {
+<<<<<<< .mine
+        
+        setTitle("MiniProject Databases & Java");
+        
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        add(mainscreen = new MainScreen());
+        menu = new Menubalk();
+        setJMenuBar(menu);
+        
+        pack();
+        setSize(800, 600);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+        
+        startConnectie();
+        
+        mainscreen.init();
+=======
+        frame = new Frame();
+>>>>>>> .r32
+    }
+    
+    public void logOff()
+    {
+        frame.logOff();
+    }
+    
+    public void quit()
+    {
+        frame.quit();
+    }
+    
+    public void add(JPanel panel){
+        frame.add(panel);
+    }
+}

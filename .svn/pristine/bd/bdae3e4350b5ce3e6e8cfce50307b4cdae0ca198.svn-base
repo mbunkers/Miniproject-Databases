@@ -1,0 +1,137 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Model;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+
+import Controller.Database;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class Gedachte {
+    
+    private ResultSet rs;
+    private int id;
+    private String notes;
+    
+    private boolean first = true;
+
+    public Gedachte(int id, String notes) {
+        this.id = id;
+        this.notes = notes;
+    }
+    
+    public Gedachte(){
+       try{
+           java.sql.Connection con = Database.getConnection();
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement();
+        
+            rs = stmt.executeQuery("select notes from thoughts");
+       }catch(SQLException ex){
+           ex.printStackTrace();
+       }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+    
+    
+    
+    public boolean hasNext(){
+        try {
+            if(rs.next()){
+                return true;
+            }else{
+                
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public String getGedachte(){
+        try {
+            if(rs.isBeforeFirst() && first){  
+                first = false;
+                return rs.getString(2);                    
+            }
+            else if(rs.isBeforeFirst() && !first){
+                rs.next();
+                return rs.getString(2);
+            }
+            } catch (SQLException ex) {
+            ex.printStackTrace();
+        }     
+        return "";
+    }
+    
+    public void putGedachte(String notes){
+        try {
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            
+            ResultSet idTest;
+            idTest = s.executeQuery("select count(id) as aantalID from thoughts");
+            idTest.first();
+            int id = idTest.getInt("aantalID");
+            if (id == 0){
+                id = 1;
+            }
+            else
+            {
+                id = id+1;
+            }
+            
+            ResultSet thoughtInvoegen;
+            thoughtInvoegen = s.executeQuery("select * from thoughts");
+            thoughtInvoegen.moveToInsertRow();
+            thoughtInvoegen.updateInt("id", id);
+            thoughtInvoegen.updateString("notes", notes);
+            thoughtInvoegen.insertRow();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public ArrayList getAllGedachtes()
+    {
+        ArrayList arrayList = new ArrayList<Gedachte>();
+                return arrayList;
+    }
+    
+    public void wisGedachte(int id){
+        try{
+            java.sql.Connection con = Database.getConnection();
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        
+            rs = stmt.executeQuery("select * from thoughts");
+            rs.absolute(id);
+            rs.deleteRow();
+            
+       }catch(SQLException ex){
+            ex.printStackTrace();
+       }
+    }
+}

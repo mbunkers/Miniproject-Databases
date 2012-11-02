@@ -1,0 +1,111 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import View.MainScreen;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class MiniprojectDatabases extends JFrame {
+    
+    private boolean ingelogd = false;
+    
+    public MiniprojectDatabases() {
+        setSize(800, 600);
+        setTitle("MiniProject Databases & Java");
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        add(new MainScreen());
+        
+        pack();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+        
+        startConnectie();
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+<<<<<<< .mine
+=======
+        // initialiseer eerst verbinding met de database
+        if( !DataLayer.init() )
+        {
+            System.err.println("Exit: no connection to database" );
+            System.exit(-1);
+        }
+        else {
+            System.out.println("Connection established");
+        }
+        
+>>>>>>> .r21
+        new MiniprojectDatabases();
+    }
+    
+    public void startConnectie() {
+        final JDialog inlog = new JDialog(this, "Inloggen", true);
+        JPanel panel = new JPanel();
+        JPanel labels = new JPanel();
+        JPanel txtfields = new JPanel();
+        JButton commit = new JButton("Log in");
+        
+        panel.setLayout(new BorderLayout());
+        labels.setLayout(new GridLayout(2, 0));
+        txtfields.setLayout(new GridLayout(2, 0));
+        
+        JLabel name = new JLabel("Username");
+        JLabel pssword = new JLabel("Password");
+        final JTextField username = new JTextField();
+        final JPasswordField password = new JPasswordField();
+        
+        inlog.add(panel);
+        panel.add(labels, BorderLayout.WEST);
+        panel.add(txtfields, BorderLayout.CENTER);
+        panel.add(commit, BorderLayout.SOUTH);
+        
+        labels.add(name);
+        labels.add(pssword);
+        txtfields.add(username, BorderLayout.CENTER);
+        txtfields.add(password, BorderLayout.CENTER);
+        username.setBounds(50, 10, 200, 20);
+        password.setBounds(50, 10, 200, 20);
+        commit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                
+                if (!DataLayer.init(username.getText(), password.getText())) {
+                    System.out.println("Exit: no connection to database");
+                    ingelogd = false;
+                } else {
+                    System.out.println("Connection established");
+                    ingelogd = true;
+                    inlog.setVisible(false);
+                }
+            }
+        });
+        
+        inlog.pack();
+        inlog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        inlog.setLocationRelativeTo(null);
+        inlog.setVisible(true);
+    }
+}

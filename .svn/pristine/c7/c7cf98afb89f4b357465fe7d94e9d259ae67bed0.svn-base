@@ -1,0 +1,40 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import sun.util.calendar.BaseCalendar.Date;
+
+/**
+ *
+ * @author Administrator
+ */
+public class EditScreen extends JPanel{
+    
+    private JTextField projectNaam, actieNaam, actie;
+    private JLabel project, actieNaamLabel, actieLabel, datum, prioriteit;
+    private JList select;
+    private Date date;
+    
+    public EditScreen(){
+        
+        makeFields();
+    }
+    
+    private void makeFields(){
+        projectNaam = new JTextField();
+        actieNaam = new JTextField();
+        actie = new JTextField();
+        
+        project = new JLabel("Project");
+        actieNaamLabel = new JLabel("actienaam");
+        actieLabel = new JLabel("actie");
+        datum = new JLabel("datum");
+        prioriteit = new JLabel("prioriteit");
+    }
+}

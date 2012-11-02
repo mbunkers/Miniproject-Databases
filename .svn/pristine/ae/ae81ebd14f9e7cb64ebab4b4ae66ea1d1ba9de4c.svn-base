@@ -1,0 +1,97 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Controller.DataLayer;
+import Model.Gedachte;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class Projectscreen extends JPanel {
+
+    private JList list;
+    private int huidigeSelectie;
+    private JScrollPane scroll;
+    private JLabel projectNaam;
+    private static int volgendId = 1;
+    private final static int id = volgendId;
+
+    public Projectscreen(String naam) {
+        projectNaam = new JLabel(naam);
+        volgendId++;
+        huidigeSelectie = 0;
+        init();
+    }
+
+    public void init() {
+        setLayout(new BorderLayout());
+        list = new JList();
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                int first = lse.getFirstIndex();
+                int last = lse.getLastIndex();
+
+                if (lse.getValueIsAdjusting()) {
+                    if (huidigeSelectie == 2 && first == 1 && last == 2) {
+                        huidigeSelectie = 3;
+                    } else {
+                        if (huidigeSelectie == 0) {
+                            huidigeSelectie = last;
+                        } else {
+                            if (huidigeSelectie <= first) {
+                                huidigeSelectie = last;
+                            } else {
+                                huidigeSelectie = first;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        add(list, BorderLayout.CENTER);
+        setBorder(BorderFactory.createBevelBorder(5, Color.BLACK, Color.BLACK));
+        setBackground(Color.yellow);
+        add(projectNaam, BorderLayout.NORTH);
+
+        scroll = new JScrollPane();
+        add(scroll, BorderLayout.CENTER);
+        validate();
+    }
+
+    public void changeName(String naam) {
+        projectNaam.setText(naam);
+    }
+
+    public void updateThoughts() {
+        ArrayList thoughts = DataLayer.getAllThoughts();
+        DefaultListModel model = new DefaultListModel();
+        for (Object test : thoughts) {
+            Gedachte t = (Gedachte) test;
+            String weergave = t.getId() + ". " + t.getNotes();
+            model.addElement(weergave);
+        }
+        list.setModel(model);
+        scroll.getViewport().setView(list);
+        validate();
+    }
+
+    public int getHuidigeSelectie() {
+        return huidigeSelectie;
+    }
+}

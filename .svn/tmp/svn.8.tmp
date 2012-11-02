@@ -1,0 +1,150 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Model.Gedachte;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.RadialGradientPaint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class MainScreen extends JPanel implements ActionListener {
+
+    private JScrollBar scrollBar;
+    private JPanel gedachten, gedachte1, gedachte2, gedachte3;
+    private Kalenderscreen kalender;
+    private Gedachte gedachte;
+    private int teller = 0;
+    private ArrayList projects;
+    private Random random = new Random();
+
+    public MainScreen() {
+    }
+
+    public void init() {
+        gedachte = new Gedachte();
+        //maakGedachte();
+        projects = new ArrayList<Projectscreen>();
+        createPanels();
+        //create();
+
+        //setLayout(new BorderLayout());
+
+        //add(scrollBar, BorderLayout.WEST);
+        //add(kalender, BorderLayout.EAST);
+    }
+
+    private void createPanels() {
+        // Google Calender panel
+        kalender = new Kalenderscreen();
+        add(kalender);
+        int kalenderWidth = 200;
+        int kalenderHeight = 600;
+        kalender.setBounds(800 - kalenderWidth, 0, kalenderWidth, kalenderHeight);
+        kalender.setBackground(Color.WHITE);
+
+        // Gedachten scherm
+        gedachten = new JPanel();
+        add(gedachten);
+        gedachten.setBounds(0, 0, 600, 600);
+        gedachten.setBackground(Color.BLUE);
+        gedachten.setLayout(new GridLayout());
+        
+        // schermen daarin
+       gedachten.add(addProject());
+       gedachten.add(addProject());
+       gedachten.add(addProject());
+
+    }
+    
+    private Projectscreen addProject()
+    {
+        Projectscreen panel = new Projectscreen();
+        panel.setLayout(new BorderLayout());
+        panel.setSize(200, 600);
+        JScrollBar scrollbar=  new JScrollBar();
+        panel.add(scrollbar, BorderLayout.WEST);
+        
+        
+        int l = random.nextInt(3);
+        switch(l){
+            case 1:
+                panel.setBackground(Color.YELLOW);
+                break;
+            case 2: 
+                panel.setBackground(Color.MAGENTA);
+                break;
+            case 3:
+                panel.setBackground(Color.ORANGE);
+                break;
+            default:
+                panel.setBackground(Color.PINK);
+                break;
+        }
+        
+        panel.setBackground(Color.RED);
+        
+        projects.add(panel);
+        return panel;
+    }
+
+    private void create() {
+        scrollBar = new JScrollBar();
+        scrollBar.setLayout(new FlowLayout());
+
+        gedachte1 = new JPanel();
+        gedachte1.setPreferredSize(new Dimension(150, 600));
+        gedachte2 = new JPanel();
+        gedachte2.setPreferredSize(new Dimension(150, 600));
+        gedachte3 = new JPanel();
+        gedachte3.setPreferredSize(new Dimension(150, 600));
+        //kalender = new JPanel();
+        //kalender.setPreferredSize(new Dimension(150, 600));
+
+        scrollBar.add(gedachte1);
+        scrollBar.add(gedachte2);
+        scrollBar.add(gedachte3);
+    }
+
+    private void maakGedachte() {
+        if (teller <= 0) {
+            JButton button = new JButton(gedachte.getGedachte());
+            button.addActionListener(this);
+            gedachte1.add(button);
+            teller = 1;
+        }
+
+        if (teller == 1) {
+            JButton button = new JButton(gedachte.getGedachte());
+            button.addActionListener(this);
+            gedachte2.add(button);
+            teller++;
+        }
+        if (teller >= 2) {
+            JButton button = new JButton(gedachte.getGedachte());
+            button.addActionListener(this);
+            gedachte3.add(button);
+            teller = 0;
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //
+    }
+}

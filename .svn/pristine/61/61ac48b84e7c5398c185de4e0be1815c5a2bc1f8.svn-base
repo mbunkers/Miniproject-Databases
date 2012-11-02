@@ -1,0 +1,76 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Model;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+
+import Controller.Database;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Actie {
+    
+    private Connection con = (Connection) Database.getConnection();
+    
+    private ResultSet rs;
+    
+    private boolean first = true;
+    
+    public Actie(){
+        try {
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement();
+        
+            rs = stmt.executeQuery("select description from actions");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    public boolean hasNext(){
+        try {
+            if(rs.next()){
+                return true;
+            }else{
+                
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public String getActionDescription(){
+        try {                 
+            if(rs.isBeforeFirst() && first){
+                first = false;
+                return rs.getString(2);          
+            }
+            else if(rs.isBeforeFirst() && !first){
+                rs.next();
+                return rs.getString(2);
+            }
+            } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return "";
+    }
+    
+    public void putActie(String actieNaam, String actie, String datum){
+        try {
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement();
+            
+            stmt.executeQuery("insert into actions"
+                    + "(description, notes, action_date)"
+                    + "values( " + actieNaam + ", " + actie + ", " + datum + ");");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}

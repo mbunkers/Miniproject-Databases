@@ -1,0 +1,64 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Model;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+
+import Controller.Database;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Gedachte {
+    
+    private Connection con = (Connection) Database.getConnection();
+    
+    private ResultSet rs;
+    
+    public Gedachte(){
+       try{
+            Statement stmt = (com.mysql.jdbc.Statement) con.createStatement();
+        
+            rs = stmt.executeQuery("select notes from thoughts");
+       }catch(SQLException ex){
+           ex.printStackTrace();
+       }
+    }
+    
+    public boolean hasNext(){
+        try {
+            if(rs.next()){
+                return true;
+            }else{
+                
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public String getGedachte(){
+        try {
+            if(rs.isBeforeFirst()){
+                if(hasNext()){
+                    return rs.getString(2);
+                }else{
+                    
+                }
+            }
+            else{
+                
+            }
+            } catch (SQLException ex) {
+            ex.printStackTrace();
+        }     
+        return "";
+    }
+}

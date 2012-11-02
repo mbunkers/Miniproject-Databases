@@ -1,0 +1,169 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Model.Gedachte;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.RadialGradientPaint;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class MainScreen extends JPanel implements ActionListener {
+
+    private JScrollBar scrollBar;
+    private JPanel gedachten, projecten, gedachte1, gedachte2, gedachte3;
+    private Kalenderscreen kalender;
+    private Gedachte gedachte;
+    private int teller = 0;
+    private ArrayList projects;
+    private Random random = new Random();
+
+    public MainScreen() {
+    }
+
+    public void init() {
+        gedachte = new Gedachte();
+        //maakGedachte();
+        projects = new ArrayList<Projectscreen>();
+        createPanels();
+        //create();
+
+        //setLayout(new BorderLayout());
+
+        //add(scrollBar, BorderLayout.WEST);
+        //add(kalender, BorderLayout.EAST);
+    }
+
+    private void createPanels() {
+        setLayout(new BorderLayout());
+        
+        // Google Calender panel
+        kalender = new Kalenderscreen();
+        add(kalender, BorderLayout.EAST);
+        int kalenderWidth = 200;
+        int kalenderHeight = 600;
+        kalender.setSize(200, 600);
+        kalender.setBounds(0, 0, kalenderWidth, kalenderHeight);
+        //kalender.setBackground(Color.WHITE);
+
+        // Gedachten scherm
+        gedachten = new JPanel();
+        add(gedachten, BorderLayout.CENTER);
+        gedachten.setBounds(0, 0, 600, 600);
+        gedachten.setBackground(Color.BLUE);
+        gedachten.setLayout(new GridLayout(1,4));
+        
+        projecten = new JPanel(new BorderLayout());
+        projecten.add(gedachten, BorderLayout.CENTER);
+        add(projecten);
+        
+        // schermen daarin
+       gedachten.add(addProject(1));
+       gedachten.add(addProject(2));
+       gedachten.add(addProject(3));
+       
+       JScrollBar scroll = new JScrollBar();
+       scroll.setOrientation(JScrollBar.HORIZONTAL);
+       projecten.add(scroll, BorderLayout.SOUTH);
+       validate();
+    }
+    
+    private Projectscreen addProject(int i)
+    {
+        Projectscreen project = new Projectscreen("Gedachten");
+        if (i == 1){
+            project.setBackground(Color.LIGHT_GRAY);
+            project.updateThoughts();
+        }
+        
+        if (i == 2){
+            project.changeName("Untitled project");
+            project.setBackground(Color.ORANGE);
+        }
+        
+        if (i == 3){
+            project.changeName("Untitled project");
+        }
+        
+        return project;
+    }
+
+    private void create() {
+        scrollBar = new JScrollBar();
+        scrollBar.setLayout(new FlowLayout());
+
+        gedachte1 = new JPanel();
+        gedachte1.setPreferredSize(new Dimension(150, 600));
+        gedachte2 = new JPanel();
+        gedachte2.setPreferredSize(new Dimension(150, 600));
+        gedachte3 = new JPanel();
+        gedachte3.setPreferredSize(new Dimension(150, 600));
+        //kalender = new JPanel();
+        //kalender.setPreferredSize(new Dimension(150, 600));
+
+        scrollBar.add(gedachte1);
+        scrollBar.add(gedachte2);
+        scrollBar.add(gedachte3);
+    }
+    
+    private void maakGedachte(){
+        while(gedachte.hasNext()){
+            if(teller <= 0){
+                if(gedachte.getGedachte().equals("")){
+                
+                }else{
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte1.add(button);
+                    teller = 1;
+                }
+            }
+        
+            if(teller == 1){
+                if(gedachte.getGedachte().equals("")){
+                
+                }else{
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte2.add(button);
+                    teller++;
+                }
+            }
+            if(teller >= 2){
+                if(gedachte.getGedachte().equals("")){
+                
+                }else{
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte3.add(button);
+                    teller = 0;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        /*JDialog dialog = new JDialog();
+        dialog.setBounds(0, 0, 300, 500);
+        
+        dialog.add(new EditScreen());
+        dialog.setVisible(true);*/
+    }
+}

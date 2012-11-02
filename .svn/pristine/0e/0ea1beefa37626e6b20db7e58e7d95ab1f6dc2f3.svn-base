@@ -1,0 +1,60 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class EditScreen extends JPanel implements ActionListener{
+    
+    private JTextField projectNaam, actieNaam, actie, date;
+    private JLabel project, actieNaamLabel, actieLabel, datum, prioriteit;
+    private JList select;
+    private JButton button;
+    
+    public EditScreen(){
+        makeFields();
+        
+        setLayout(new GridLayout(4, 3));
+        
+        add(project);
+        add(projectNaam);
+        add(datum);
+        add(date);
+        add(actieNaamLabel);
+        add(actieNaam);
+        add(prioriteit);
+        add(select);
+        add(actieLabel);
+        add(actie);
+        add(button);
+    }
+    
+    private void makeFields(){
+        projectNaam = new JTextField();
+        actieNaam = new JTextField();
+        actie = new JTextField();
+        
+        project = new JLabel("Project");
+        actieNaamLabel = new JLabel("actienaam");
+        actieLabel = new JLabel("actie");
+        datum = new JLabel("datum");
+        prioriteit = new JLabel("prioriteit");
+        
+        button = new JButton("Save");
+        button.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}

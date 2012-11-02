@@ -1,0 +1,108 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Model.Gedachte;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class MainScreen extends JPanel implements ActionListener{
+    private JScrollBar scrollBar;
+    private JPanel gedachte1, gedachte2, gedachte3,  kalender;
+    
+    private Gedachte gedachte;
+    
+    private int teller = 0;
+    
+    public MainScreen(){
+        
+    }
+    
+    public void init()
+    {
+        gedachte = new Gedachte();
+        maakGedachte();
+        
+        create();
+        
+        setLayout(new BorderLayout());
+        
+        add(scrollBar, BorderLayout.WEST);
+        add(kalender, BorderLayout.EAST);
+    }
+    
+    private void create(){
+        scrollBar = new JScrollBar();
+        scrollBar.setLayout(new FlowLayout());
+        
+        gedachte1 = new JPanel();
+        gedachte1.setPreferredSize(new Dimension(150, 600));
+        gedachte2 = new JPanel();
+        gedachte2.setPreferredSize(new Dimension(150, 600));
+        gedachte3 = new JPanel();
+        gedachte3.setPreferredSize(new Dimension(150, 600));
+        kalender = new JPanel();
+        kalender.setPreferredSize(new Dimension(150, 600));
+        
+        scrollBar.add(gedachte1);
+        scrollBar.add(gedachte2);
+        scrollBar.add(gedachte3);
+    }
+    
+    private void maakGedachte(){
+        while(gedachte.hasNext()){
+            if(teller <= 0){
+                if(gedachte.getGedachte().equals("")){
+                
+                }else{
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte1.add(button);
+                    teller = 1;
+                }
+            }
+        
+            if(teller == 1){
+                if(gedachte.getGedachte().equals("")){
+                
+                }else{
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte2.add(button);
+                    teller++;
+                }
+            }
+            if(teller >= 2){
+                if(gedachte.getGedachte().equals("")){
+                
+                }else{
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte3.add(button);
+                    teller = 0;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JDialog dialog = new JDialog();
+        dialog.setBounds(0, 0, 300, 500);
+        
+        dialog.add(new EditScreen());
+    }
+}

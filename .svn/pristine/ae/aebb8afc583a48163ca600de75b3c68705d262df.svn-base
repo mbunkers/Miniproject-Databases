@@ -1,0 +1,88 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import Model.Gedachte;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class DataLayer {
+
+    private DataLayer() {
+    }
+    
+    public static boolean init(String username, String password)
+    {
+        Database.init("databases.aii.avans.nl", "miniproject7_db2", username, password);
+        Connection con = Database.getConnection();
+        return (con != null);
+    }
+    
+    public static void putGedachte(String notes){
+        try {
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            
+            ResultSet idTest;
+            idTest = s.executeQuery("select count(id) as aantalID from thoughts");
+            idTest.first();
+            int id = idTest.getInt("aantalID");
+            if (id == 0){
+                id = 1;
+            }
+            else
+            {
+                id = id+1;
+            }
+            
+            ResultSet thoughtInvoegen;
+            thoughtInvoegen = s.executeQuery("select * from thoughts");
+            thoughtInvoegen.moveToInsertRow();
+            thoughtInvoegen.updateInt("id", id);
+            thoughtInvoegen.updateString("notes", notes);
+            thoughtInvoegen.insertRow();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static ArrayList getAllThoughts()
+    {
+        try {
+            ArrayList arrayList = new ArrayList<Gedachte>();
+            
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            
+            ResultSet thoughts;
+            thoughts = s.executeQuery("select * from thoughts");
+            thoughts.first();
+            
+            int id1 = thoughts.getInt("id");
+            String notes1 = thoughts.getString("notes");
+            Gedachte gedachte1 = new Gedachte(id1, notes1);
+            arrayList.add(gedachte1);
+            
+            while(thoughts.next()){
+            int id = thoughts.getInt("id");
+            String notes = thoughts.getString("notes");
+            
+            Gedachte gedachte = new Gedachte(id, notes);
+            arrayList.add(gedachte);
+            }
+            
+            return arrayList;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+}

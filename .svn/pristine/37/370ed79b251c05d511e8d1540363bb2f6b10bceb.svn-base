@@ -1,0 +1,76 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Controller.DataLayer;
+import Model.Gedachte;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.ScrollPane;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListModel;
+import sun.awt.HorizBagLayout;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class Projectscreen extends JPanel {
+private JList list;
+private JScrollPane scroll;
+private JLabel projectNaam;
+private static int volgendId = 1;
+private final static int id = volgendId;
+
+    public Projectscreen(String naam) {
+        projectNaam = new JLabel(naam);
+        volgendId++;
+        init();
+    }
+    
+    public void init()
+    {
+        setLayout(new BorderLayout());
+        list = new JList();
+        add(list, BorderLayout.CENTER);
+        setBorder(BorderFactory.createBevelBorder(5, Color.BLACK, Color.BLACK));
+        setBackground(Color.yellow);
+        add(projectNaam, BorderLayout.NORTH);
+        
+        scroll = new JScrollPane();
+        add(scroll, BorderLayout.CENTER);
+        //add(scroll, BorderLayout.EAST);
+        validate();
+    }
+    
+    public void changeName(String naam)
+    {
+        projectNaam.setText(naam);
+    }
+
+    public void updateThoughts() {
+        ArrayList thoughts = DataLayer.getAllThoughts();
+        DefaultListModel model = new DefaultListModel();
+        for (Object test : thoughts){
+            Gedachte t = (Gedachte) test;
+            String weergave = t.getId() + ". " + t.getNotes();
+            model.addElement(weergave);
+        }
+        list.setModel(model);
+        scroll.getViewport().setView(list);
+        
+        
+        validate();
+    }
+    
+}

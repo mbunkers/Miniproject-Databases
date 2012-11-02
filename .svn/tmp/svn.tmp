@@ -1,0 +1,25 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import java.sql.Connection;
+
+/**
+ *
+ * @author Marc Bunkers
+ */
+public class DataLayer {
+
+    private DataLayer() {
+    }
+    
+    public static boolean init(String username, String password)
+    {
+        Database.init("databases.aii.avans.nl", "mbunkers_db", username, password);
+        Connection con = Database.getConnection();
+        return (con != null);
+    }
+    
+}

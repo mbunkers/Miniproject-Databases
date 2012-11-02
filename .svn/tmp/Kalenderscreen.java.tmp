@@ -1,0 +1,19 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import javax.swing.JPanel;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+<<<<<<< .mine
+public class Kalenderscreen extends JPanel {
+=======
+public class Kalenderscreen extends JPanel{
+>>>>>>> .r32
+    
+}

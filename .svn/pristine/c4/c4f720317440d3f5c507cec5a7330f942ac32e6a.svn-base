@@ -1,0 +1,268 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package View;
+
+import Controller.DataLayer;
+import Model.Gedachte;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollBar;
+import javax.swing.JTextField;
+
+/**
+ *
+ * @author Marc Bunkers, Fabian Claasen
+ */
+public class MainScreen extends JFrame implements ActionListener, Observer {
+
+    private JScrollBar scrollBar;
+    private JPanel gedachten, projecten, gedachte1, gedachte2, gedachte3;
+    private Kalenderscreen kalender;
+    private Gedachte gedachte;
+    private int teller = 0;
+    private ArrayList projects;
+    private Random random = new Random();
+    private Menubalk menu;
+    private boolean ingelogd = false;
+
+    public MainScreen() {
+        setTitle("MiniProject Databases & Java");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        menu = new Menubalk();
+        setJMenuBar(menu);
+        
+        pack();
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setVisible(true);
+        
+        startConnectie();
+        init();
+    }
+
+    public void init() {
+        gedachte = new Gedachte();
+        projects = new ArrayList<Projectscreen>();
+        createPanels();
+    }
+
+    private void createPanels() {
+        setLayout(new BorderLayout());
+
+        // Google Calender panel
+        kalender = new Kalenderscreen();
+        add(kalender, BorderLayout.EAST);
+        int kalenderWidth = 200;
+        int kalenderHeight = 600;
+        kalender.setSize(200, 600);
+        kalender.setBounds(0, 0, kalenderWidth, kalenderHeight);
+        //kalender.setBackground(Color.WHITE);
+
+        // Gedachten scherm
+        gedachten = new JPanel();
+        add(gedachten, BorderLayout.CENTER);
+        gedachten.setBounds(0, 0, 600, 600);
+        gedachten.setBackground(Color.BLUE);
+        gedachten.setLayout(new GridLayout(1, 4));
+
+        projecten = new JPanel(new BorderLayout());
+        projecten.add(gedachten, BorderLayout.CENTER);
+        add(projecten);
+
+        // schermen daarin
+        gedachten.add(addProject(1));
+        gedachten.add(addProject(2));
+        gedachten.add(addProject(3));
+
+        JScrollBar scroll = new JScrollBar();
+        scroll.setOrientation(JScrollBar.HORIZONTAL);
+        projecten.add(scroll, BorderLayout.SOUTH);
+        validate();
+    }
+
+    public void updateThoughts()
+    {
+        Projectscreen project = (Projectscreen) projects.get(0);
+        project.updateThoughts();
+    }
+    
+    public void updateScreen() {
+
+        validate();
+    }
+
+    private Projectscreen addProject(int i) {
+        Projectscreen project = new Projectscreen("Gedachten");
+        if (i == 1) {
+            project.setBackground(Color.LIGHT_GRAY);
+            project.updateThoughts();
+            projects.add(project);
+        }
+
+        if (i == 2) {
+            project.changeName("Untitled project");
+            project.setBackground(Color.ORANGE);
+        }
+
+        if (i == 3) {
+            project.changeName("Untitled project");
+        }
+
+        return project;
+    }
+
+    private void create() {
+        scrollBar = new JScrollBar();
+        scrollBar.setLayout(new FlowLayout());
+
+        gedachte1 = new JPanel();
+        gedachte1.setPreferredSize(new Dimension(150, 600));
+        gedachte2 = new JPanel();
+        gedachte2.setPreferredSize(new Dimension(150, 600));
+        gedachte3 = new JPanel();
+        gedachte3.setPreferredSize(new Dimension(150, 600));
+        //kalender = new JPanel();
+        //kalender.setPreferredSize(new Dimension(150, 600));
+
+        scrollBar.add(gedachte1);
+        scrollBar.add(gedachte2);
+        scrollBar.add(gedachte3);
+    }
+
+    private void maakGedachte() {
+        while (gedachte.hasNext()) {
+            if (teller <= 0) {
+                if (gedachte.getGedachte().equals("")) {
+                } else {
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte1.add(button);
+                    teller = 1;
+                }
+            }
+
+            if (teller == 1) {
+                if (gedachte.getGedachte().equals("")) {
+                } else {
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte2.add(button);
+                    teller++;
+                }
+            }
+            if (teller >= 2) {
+                if (gedachte.getGedachte().equals("")) {
+                } else {
+                    JButton button = new JButton(gedachte.getGedachte());
+                    button.addActionListener(this);
+                    gedachte3.add(button);
+                    teller = 0;
+                }
+            }
+        }
+    }
+    
+    public void startConnectie()
+    {
+        final JDialog inlog = new JDialog(this, "Inloggen", true);
+        inlog.setBounds(0, 0, 200, 150);
+        
+        JPanel panel = new JPanel();
+        JPanel labels = new JPanel();
+        JPanel txtfields = new JPanel();
+        JButton commit = new JButton("Log in");
+        
+        panel.setLayout(new BorderLayout());
+        labels.setLayout(new GridLayout(2, 0));
+        txtfields.setLayout(new GridLayout(2, 0));
+        
+        final JLabel name = new JLabel("Username");
+        final JLabel pssword = new JLabel("Password");
+        final JTextField username = new JTextField("miniproject7"); // voor ontwikkel en test doeleinde is dit ingevuld
+        final JPasswordField password = new JPasswordField("Pp3jWFQH"); // voor ontwikkel en test doeleinde is dit ingevuld
+        
+        inlog.add(panel);
+        panel.add(labels, BorderLayout.WEST);
+        panel.add(txtfields, BorderLayout.CENTER);
+        panel.add(commit, BorderLayout.SOUTH);
+        
+        labels.add(name);
+        labels.add(pssword);
+        txtfields.add(username, BorderLayout.CENTER);
+        txtfields.add(password, BorderLayout.CENTER);
+        username.setBounds(50, 10, 200, 20);
+        password.setBounds(50, 10, 200, 20);
+        commit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                
+                if (!DataLayer.init(username.getText(), password.getText())) {
+                    ingelogd = false;
+                    username.setText("");
+                    name.setForeground(Color.RED);
+                    password.setText("");
+                    pssword.setForeground(Color.RED);
+                } else {
+                    ingelogd = true;
+                    inlog.setVisible(false);
+                }
+            }
+        });
+        
+        inlog.pack();
+        inlog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        inlog.setLocationRelativeTo(null);
+        inlog.setResizable(false);
+        inlog.setVisible(true);
+    }
+    
+    public void logOff()
+    {
+        ingelogd = false;
+        startConnectie();
+    }
+    
+    public void quit()
+    {
+        ingelogd = false;
+        System.exit(0);
+    }
+    
+    public void updateMain()
+    {
+        updateScreen();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        /*JDialog dialog = new JDialog();
+         dialog.setBounds(0, 0, 300, 500);
+        
+         dialog.add(new EditScreen());
+         dialog.setVisible(true);*/
+    }
+
+    @Override
+    public void update(Observable o, Object o1) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getCurrentThought() {
+        Projectscreen project = (Projectscreen) projects.get(0);
+        return project.getHuidigeSelectie();
+    }
+}
