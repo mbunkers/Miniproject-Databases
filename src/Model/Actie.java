@@ -20,8 +20,16 @@ public class Actie {
     private String statuschange_date;
     private boolean done;
     
-    public Actie(){
-        
+    public Actie(int id, String description, String notes, int status_id, int context_id, int project_id, String action_date, String statuschange_date, boolean done){
+        this.id = id;
+        this.description = description;
+        this.notes = notes;
+        this.status_id = status_id;
+        this.context_id = context_id;
+        this.project_id = project_id;
+        this.action_date = action_date;
+        this.statuschange_date = statuschange_date;
+        this.done = done;
     }
 
     public int getId() {
