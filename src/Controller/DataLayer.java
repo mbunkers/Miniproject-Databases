@@ -259,7 +259,7 @@ public class DataLayer {
         return null;
     }
 
-    public static void addAction(String description, String status, int projectid, String datum) {
+    public static void addAction(String description, String notes, String context, String status, int projectid, String datum) {
         try {
             java.sql.Connection con = Database.getConnection();
             java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -280,15 +280,19 @@ public class DataLayer {
 
 
             int actionid = aantalID("actions");
+            int context_id = getContextID(context);
 
             ResultSet actions;
             actions = s.executeQuery("select * from actions");
             actions.moveToInsertRow();
             actions.updateInt("id", actionid);
             actions.updateString("description", description);
+            actions.updateString("notes", notes);
+            actions.updateInt("contexts_id", context_id);
             actions.updateInt("status_id", statusid);
             actions.updateInt("project_id", projectid);
             actions.updateDate("action_date", Date.valueOf(datum));
+            actions.updateDate("statuschange_date", null);
             actions.updateBoolean("done", false);
             actions.insertRow();
 
@@ -305,20 +309,166 @@ public class DataLayer {
 
             ResultSet actions;
 
-            actions = s.executeQuery("select description from actions where project_id = " + id);
+            actions = s.executeQuery("select * from actions where project_id = " + id);
 
             if (actions.next()) {
                 actions.first();
-                arraylist.add(actions.getString("description"));
+                arraylist.add(actions.getInt("id") + ", " + actions.getString("description") + ", "
+                        + actions.getString("notes") + ", " + actions.getInt("status_id") + ", "
+                        + actions.getInt("contexts_id") + ", " + actions.getInt("project_id") + ", "
+                        + actions.getString("action_date") + ", " + actions.getString("statuschange_date") + ", "
+                        + actions.getBoolean("done"));
 
                 while (actions.next()) {
-                    arraylist.add(actions.getString("description"));
+                    arraylist.add(actions.getInt("id") + ", " + actions.getString("description") + ", "
+                            + actions.getString("notes") + ", " + actions.getInt("status_id") + ", "
+                            + actions.getInt("contexts_id") + ", " + actions.getInt("project_id") + ", "
+                            + actions.getString("action_date") + ", " + actions.getString("statuschange_date") + ", "
+                            + actions.getBoolean("done"));
                 }
             }
             return arraylist;
         } catch (SQLException ex) {
             Logger.getLogger(DataLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
+    }
+
+    public static ArrayList search(String notes) {
+        try {
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            ArrayList list = new ArrayList();
+
+            ResultSet search;
+            search = s.executeQuery("select * from thoughts");
+
+            while (search.next()) {
+                String str = search.getString("notes");
+
+                if (str.equals(notes)) {
+                    list.add(str);
+                }
+            }
+
+            return list;
+        } catch (SQLException ex) {
+            ArrayList exception = new ArrayList();
+            exception.add(notes + "kon niet gevonden worden/ bestaat niet!");
+
+            return exception;
+        }
+    }
+
+    public static ArrayList getContexts() {
+        try {
+            ArrayList<String> arraylist = new ArrayList<String>();
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            ResultSet contexts;
+            contexts = s.executeQuery("select name from contexts");
+
+            if (contexts.next()) {
+                contexts.first();
+                arraylist.add(contexts.getString("name"));
+
+                while (contexts.next()) {
+                    arraylist.add(contexts.getString("name"));
+                }
+            }
+            return arraylist;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DataLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static void addContext(String context) {
+        try {
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            int aantal = aantalID("contexts");
+
+            ResultSet contexts;
+            contexts = s.executeQuery("select * from contexts");
+
+
+
+            contexts.moveToInsertRow();
+            contexts.updateInt("id", aantal);
+            contexts.updateString("name", context);
+            contexts.insertRow();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DataLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static int getContextID(String name) {
+        try {
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet contexts;
+
+            String query = "select id from contexts where name = \"" + name + "\";";
+            contexts = s.executeQuery(query);
+            contexts.first();
+            return contexts.getInt("id");
+        } catch (SQLException ex) {
+            Logger.getLogger(DataLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public static String changeAction(int id, String description, String notes, String context, String status, int projectid, String datum, boolean done) {
+        try {
+            java.sql.Connection con = Database.getConnection();
+            java.sql.Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            int context_id = getContextID(context);
+            
+            ResultSet statuses;
+            statuses = s.executeQuery("select * from statuses");
+            statuses.first();
+            boolean klaar = false;
+            int statusid = 0;
+            while (!klaar) {
+                if (statuses.getString("name").equals(status)) {
+                    statusid = statuses.getInt("id");
+                    klaar = true;
+                } else {
+                    statuses.next();
+                }
+            }
+
+            ResultSet action;
+
+            action = s.executeQuery("select * from actions");
+            action.absolute(id);
+
+            action.updateString("description", description);
+            action.updateString("notes", notes);
+            action.updateInt("status_id", statusid);
+            action.updateInt("project_id", projectid);
+            action.updateInt("contexts_id", context_id);
+            action.updateString("action_date", datum);
+            action.updateBoolean("done", done);
+            action.updateRow();
+            
+             return action.getInt("id") + ", " + action.getString("description") + ", "
+                            + action.getString("notes") + ", " + action.getInt("status_id") + ", "
+                            + action.getInt("contexts_id") + ", " + action.getInt("project_id") + ", "
+                            + action.getString("action_date") + ", " + action.getString("statuschange_date") + ", "
+                            + action.getBoolean("done");
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DataLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         return null;
     }
 }

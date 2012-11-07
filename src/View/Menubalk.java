@@ -39,8 +39,8 @@ public class Menubalk extends JMenuBar implements ActionListener, KeyListener {
         file.add(afsluiten);
 
         add(edit);
-        edit.add(editMenu);
-        edit.add(acties);
+        ///edit.add(editMenu);
+        //edit.add(acties);
 
         edit.add(gedachte);
         gedachte.add(toevoegen);
@@ -165,7 +165,6 @@ public class Menubalk extends JMenuBar implements ActionListener, KeyListener {
 
         if (e.getActionCommand().equals("Gedachte omzetten naar actie")) {
             ArrayList<Projectscreen> test = controller.getProjects();
-            System.out.println(test.get(0).getList().getSelectedIndex());
             if (test.get(0).getList().getSelectedIndex() == -1) {
                 JOptionPane.showMessageDialog(null, "Selecteer eerst een gedachte", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
@@ -179,33 +178,35 @@ public class Menubalk extends JMenuBar implements ActionListener, KeyListener {
                 master.setLayout(new GridLayout(0, 1));
 
                 // Project kiezen
-                JPanel project = new JPanel();
-                project.setLayout(new BorderLayout());
+                JPanel projects = new JPanel();
+                projects.setLayout(new BorderLayout());
                 JLabel projectnaam = new JLabel("Project");
                 final JComboBox box = new JComboBox();
                 final ArrayList<Projectscreen> arraylist = controller.getProjects();
                 Projectscreen thoughts = arraylist.get(0);
-                arraylist.remove(0);
                 for (Projectscreen s : arraylist) {
+                    if (!s.getNaam().equals("Gedachten")){
                     String naam = s.getNaam();
                     box.addItem(naam);
                     box.validate();
+                    }
                 }
-                project.add(projectnaam, BorderLayout.WEST);
-                project.add(box, BorderLayout.CENTER);
-                master.add(project);
+                projects.add(projectnaam, BorderLayout.WEST);
+                projects.add(box, BorderLayout.CENTER);
+                master.add(projects);
 
                 //gedachte
                 JPanel gedachten = new JPanel();
                 gedachten.setLayout(new BorderLayout());
                 JLabel n = new JLabel("Gedachte: ");
-                JLabel n1 = new JLabel();
+                final JTextField n1 = new JTextField();
                 final int id = controller.getCurrentThought();
                 final JList list = thoughts.getList();
                 final String s = (String) list.getSelectedValue();
                 String[] s1 = s.split(" ");
                 String s2 = s1[0];
                 n1.setText(s.replaceFirst(s2, ""));
+                n1.setText(n1.getText().trim());
                 gedachten.add(n, BorderLayout.WEST);
                 gedachten.add(n1, BorderLayout.CENTER);
                 master.add(gedachten);
@@ -225,6 +226,24 @@ public class Menubalk extends JMenuBar implements ActionListener, KeyListener {
                 beschrijving.add(b, BorderLayout.WEST);
                 beschrijving.add(scroll, BorderLayout.CENTER);
                 master.add(beschrijving);
+                
+                // context
+                
+                JPanel context = new JPanel();
+                context.setLayout(new BorderLayout());
+                JLabel co = new JLabel("Context");
+                final JComboBox co1 = new JComboBox();
+                co1.setEditable(true);
+                final ArrayList<String> co2 = DataLayer.getContexts();
+                if (!co2.isEmpty()){
+                    for (String t : co2){
+                        co1.addItem(t);
+                    }
+                }
+                
+                context.add(co, BorderLayout.WEST);
+                context.add(co1, BorderLayout.CENTER);
+                master.add(context);
 
                 // status
                 JPanel status = new JPanel();
@@ -256,20 +275,39 @@ public class Menubalk extends JMenuBar implements ActionListener, KeyListener {
                 toepassen.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
-                        String description = b1.getText();
+                        String description = n1.getText();
+                        String notes = b1.getText();
+                        
+                        String co3 = (String) co1.getSelectedItem();
+                        boolean bestaat = false;
+                        for (String t : co2){
+                            if (t.equals(co3)){
+                                bestaat = true;
+                            }
+                        }
+                        
+                        if (!bestaat){
+                            DataLayer.addContext(co3);
+                        }
+                        
+                        String context = co3;
                         String status = box1.getSelectedItem().toString();
-                        int projectid = arraylist.get(box.getSelectedIndex()).getID();
+                        int projectid = arraylist.get(box.getSelectedIndex()).getID() + 1;
                         String datum = d1.getText();
                         int idGedachte = Integer.parseInt("" + s.charAt(0)) - 1;
 
                         if (datum.equals("yyyy-mm-dd") | datum.equals("")) {
                             JOptionPane.showMessageDialog(null, "Vul een datum in", "Error", JOptionPane.ERROR_MESSAGE);
                         } else {
-                            DataLayer.addAction(description, status, projectid, datum);
+                            DataLayer.addAction(description, notes, context, status, projectid, datum);
                             DataLayer.deleteThought(idGedachte);
                             controller.updateThouhts();
                             controller.updateProjects();
                             dialog.setVisible(false);
+                            ArrayList<Projectscreen> project = controller.getProjects();
+                            Projectscreen t = project.get(0);
+                            int i = t.getList().getModel().getSize();
+                            int x = t.getList().getSelectedIndex();
                         }
                     }
                 });
@@ -435,8 +473,33 @@ public class Menubalk extends JMenuBar implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_ENTER) {
-            dc.search(zoekBalk.getText());
+         if(keyCode == KeyEvent.VK_ENTER){
+            final JDialog dialog = new JDialog();
+            dialog.setTitle("Search results");
+            dialog.setModal(true);
+            int height = 40;
+            
+            dialog.setBounds(0, 0, 300, 500);
+
+            JPanel panel = new JPanel();                     
+            ArrayList list = DataLayer.search(zoekBalk.getText());
+            panel.setLayout(new GridLayout(list.size(), 1));
+            
+            if(list.size() == 0){
+                JOptionPane.showMessageDialog(null, zoekBalk.getText() + " kon niet gevonden worden/ bestaat niet!", "Niet gevonden", JOptionPane.INFORMATION_MESSAGE);
+                //panel.add(new JLabel(zoekBalk.getText() + " kon niet gevonden worden/ bestaat niet!"));
+            }else{
+                for(int i = 0; i < list.size(); i++){
+                    panel.add(new JLabel(list.get(i).toString()));
+                    height = height + 20;
+                }
+                dialog.setPreferredSize(new Dimension(200, height));
+                dialog.add(panel);
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
+                dialog.validate();
+            }
         }
     }
 
